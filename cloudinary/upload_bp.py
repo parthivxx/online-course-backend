@@ -1,5 +1,4 @@
 from flask import jsonify , request , Blueprint
-from .upload_files import upload_to_cloudinary
 import os
 
 upload_bp = Blueprint('upload_bp' , __name__)
@@ -20,4 +19,4 @@ def upload():
     file_path = os.path.join(UPLOAD_FOLDER, file.filename)
     file.save(file_path)
 
-    return upload_to_cloudinary(file_path=file_path)
+    return jsonify({"message" : f"File uploaded successfully at {file_path}"}) , 200

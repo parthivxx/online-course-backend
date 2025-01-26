@@ -2,4 +2,4 @@ flask
 flask_sqlalchemy
 psycopg2
 python-dotenv
-cloudinary
+pyJWT
