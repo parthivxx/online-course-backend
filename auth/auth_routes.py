@@ -1,6 +1,6 @@
 from flask import Blueprint , jsonify , request
 from models import get_db
-from models.user import User
+from models.schema import User
 from werkzeug.security import check_password_hash , generate_password_hash
 import copy 
 import jwt
