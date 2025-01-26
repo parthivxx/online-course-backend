@@ -6,7 +6,7 @@ import copy
 import jwt
 import os
 from dotenv import load_dotenv
-
+import datetime
 load_dotenv()
 
 auth_bp = Blueprint('auth', __name__)
@@ -36,7 +36,7 @@ def register():
         response = copy.deepcopy(data)
         response["id"] = new_user.id
         response.pop('password')
-        token_content = {'id' : new_user.id}
+        token_content = {'id' : new_user.id , "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)}
         token = jwt.encode(token_content , os.getenv('JWT_SECRET') , os.getenv('JWT_ALGO'))
         response['token'] = token
         response['success'] = True
