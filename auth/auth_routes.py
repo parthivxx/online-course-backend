@@ -39,6 +39,7 @@ def register():
         token_content = {'id' : new_user.id}
         token = jwt.encode(token_content , os.getenv('JWT_SECRET') , os.getenv('JWT_ALGO'))
         response['token'] = token
+        response['success'] = True
 
         return jsonify(response),201
     except Exception as e:
