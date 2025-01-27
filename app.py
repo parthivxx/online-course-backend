@@ -7,7 +7,7 @@ from cloudinary.upload_bp import upload_bp
 from flask_cors import CORS
 
 app = Flask(__name__) 
-CORS(app)
+CORS(app , resources={r"/api/*": {"origins": "*"}})
 app.register_blueprint(auth_bp , url_prefix="/api/auth")
 app.register_blueprint(upload_bp , url_prefix="/api")
 app.register_blueprint(courses_bp , url_prefix="/api")

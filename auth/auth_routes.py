@@ -34,7 +34,7 @@ def register():
         db.add(new_user)
         db.commit()
         response = copy.deepcopy(data)
-        response["id"] = new_user.id
+        response["user"] = new_user.id
         response.pop('password')
         token_content = {'id' : new_user.id , "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)}
         token = jwt.encode(token_content , os.getenv('JWT_SECRET') , os.getenv('JWT_ALGO'))
@@ -58,4 +58,4 @@ def login():
     else:
         token_content = {"id" : existing_user.id , "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)}
         token = jwt.encode(token_content , os.getenv('JWT_SECRET'),os.getenv('JWT_ALGO'))
-        return jsonify({"id":existing_user.id,"token" : token , "success" : True}) , 200
+        return jsonify({"user":existing_user.id,"token" : token , "success" : True}) , 200
