@@ -9,7 +9,7 @@ class User(Base):
     email = Column(String(100) , unique=True)
     password = Column(Text)
     is_student = Column(Integer)
-    courses = relationship('Course' , back_populates="intstructor")
+    courses = relationship('Course' , back_populates="instructor")
 
 
 class Course(Base):
@@ -18,5 +18,5 @@ class Course(Base):
     course_title = Column(String(150))
     course_description = Column(Text)
     course_duration = Column(Integer)
-    instructor_id = Column(Integer , ForeignKey='users.id')
+    instructor_id = Column(Integer , ForeignKey('users.id'))
     instructor = relationship('User' , back_populates="courses")

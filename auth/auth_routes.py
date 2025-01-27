@@ -36,7 +36,7 @@ def register():
         response = copy.deepcopy(data)
         response["id"] = new_user.id
         response.pop('password')
-        token_content = {'id' : new_user.id , "exp": datetime.datetime.utcnow() + datetime.timedelta(hours=1)}
+        token_content = {'id' : new_user.id , "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)}
         token = jwt.encode(token_content , os.getenv('JWT_SECRET') , os.getenv('JWT_ALGO'))
         response['token'] = token
         response['success'] = True
@@ -49,4 +49,13 @@ def register():
 
 @auth_bp.route("/login" , methods=["POST"])
 def login():
-    pass
+    data = request.get_json()
+    email , password = data["email"] , data["password"]
+    db = get_db()
+    existing_user = db.query(User).filter(User.email == email).first()
+    if not existing_user:
+        return jsonify({"success" : False}) , 401
+    else:
+        token_content = {"id" : existing_user.id , "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)}
+        token = jwt.encode(token_content , os.getenv('JWT_SECRET'),os.getenv('JWT_ALGO'))
+        return jsonify({"id":existing_user.id,"token" : token , "success" : True}) , 200
