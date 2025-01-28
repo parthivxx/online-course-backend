@@ -44,7 +44,8 @@ def get_course():
             "title": course.course_title,
             "description": course.course_description,
             "duration": course.course_duration,
-            "instructorName": instructor_name
+            "instructorName": instructor_name,
+            "rating" : -1
         }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

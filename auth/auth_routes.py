@@ -40,7 +40,9 @@ def register():
         token = jwt.encode(token_content , os.getenv('JWT_SECRET') , os.getenv('JWT_ALGO'))
         response['token'] = token
         response['success'] = True
-
+        user = dict()
+        user["id"] , user["name"] , user["email"] , user["role"] = new_user.id , new_user.name , new_user.email ,"student" if new_user.is_student == 1 else "teacher"
+        response['user'] = user
         return jsonify(response),201
     except Exception as e:
         db.rollback()
@@ -58,4 +60,6 @@ def login():
     else:
         token_content = {"id" : existing_user.id , "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)}
         token = jwt.encode(token_content , os.getenv('JWT_SECRET'),os.getenv('JWT_ALGO'))
-        return jsonify({"user":existing_user.id,"token" : token , "success" : True}) , 200
+        user = dict()
+        user["id"] , user["name"] , user["email"] , user["role"] = existing_user.id , existing_user.name , existing_user.email ,"student" if existing_user.is_student == 1 else "teacher"
+        return jsonify({"user":user,"token" : token , "success" : True}) , 200
