@@ -22,14 +22,15 @@ def register():
     if not data or 'name' not in data or 'email' not in data or 'password' not in data or 'role' not in data:
         return jsonify({"error": "Missing required fields"}), 400
 
-    db = get_db()
-
-    existing_user = db.query(User).filter(User.email == data['email']).first()
-
-    if existing_user:
-        return jsonify({"error": "User with this email already exists"}), 409
+    
     
     try:
+        db = get_db()
+
+        existing_user = db.query(User).filter(User.email == data['email']).first()
+
+        if existing_user:
+            return jsonify({"error": "User with this email already exists"}), 409
         new_user = User(name=data['name'], email = data['email'] , password = generate_password_hash(data['password']) , is_student = 1 if data['role']=="student" else 0)
         db.add(new_user)
         db.commit()

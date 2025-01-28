@@ -1,4 +1,4 @@
-from sqlalchemy import Column , Integer , String , Text , ForeignKey
+from sqlalchemy import Column , Integer , String , Text , ForeignKey , PrimaryKeyConstraint
 from .database import Base
 from sqlalchemy.orm import relationship
 
@@ -10,6 +10,7 @@ class User(Base):
     password = Column(Text)
     is_student = Column(Integer)
     courses = relationship('Course' , back_populates="instructor")
+    enrolled_courses = relationship('Enrolled' , back_populates="user")
 
 
 class Course(Base):
@@ -20,3 +21,16 @@ class Course(Base):
     course_duration = Column(Integer)
     instructor_id = Column(Integer , ForeignKey('users.id'))
     instructor = relationship('User' , back_populates="courses")
+    courses_enrolled = relationship('Enrolled' , back_populates='course')
+
+
+class Enrolled(Base):
+    __tablename__ = 'enrolled'
+    user_id = Column(Integer ,ForeignKey('users.id') ,  primary_key=True)
+    course_id = Column(Integer , ForeignKey('courses.course_id') , primary_key = True)
+    
+
+    __tableargs__ = PrimaryKeyConstraint('user_id' , 'course_id')
+
+    user = relationship('User' , back_populates='enrolled_courses')
+    course = relationship('Course' , back_populates='courses_enrolled')

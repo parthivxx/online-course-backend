@@ -1,5 +1,5 @@
 from functools import wraps
-from flask import request, jsonify
+from flask import request, jsonify , g
 import jwt
 import os
 
@@ -14,7 +14,7 @@ def auth_required(f):
         try:
 
             decoded_token = int(jwt.decode(token, os.getenv('JWT_SECRET'), os.getenv('JWT_ALGO')).get("id"))
-            request.user = decoded_token
+            g.user = decoded_token
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "Token has expired"}), 401
         except jwt.InvalidTokenError:
