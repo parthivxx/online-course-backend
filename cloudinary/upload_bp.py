@@ -1,13 +1,12 @@
-from flask import jsonify , request , Blueprint , g
+from flask import jsonify , request , Blueprint , g , send_from_directory
 import os
 from middleware.auth_decorator import auth_required
 
 upload_bp = Blueprint('upload_bp' , __name__)
 
-@upload_bp.route("/upload", methods=["POST"])
+@upload_bp.route("/upload/<course_id>", methods=["POST"])
 @auth_required
-def upload():
-    course_id = request.get_json()["data"]
+def upload(course_id):
     UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'uploads')
     COURSE_SUBFOLDER = os.path.join(UPLOAD_FOLDER , str(course_id))
     if not os.path.exists(UPLOAD_FOLDER):
@@ -25,4 +24,23 @@ def upload():
     file_path = os.path.join(COURSE_SUBFOLDER, file.filename)
     file.save(file_path)
 
-    return jsonify({"message" : f"File uploaded successfully at {file_path}"}) , 200
+
+    all_files = os.listdir(COURSE_SUBFOLDER)
+
+    return jsonify({
+        "message": "File uploaded successfully!!",
+        "uploaded_file": file.filename,
+        "all_files": all_files  # List of all files in the course folder
+    }), 200
+
+@upload_bp.route("/download/pdf/<course_id>/<file_name>" , methods=["GET"])
+@auth_required
+def download_pdf(course_id , file_name):
+    UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'uploads')
+    COURSE_SUBFOLDER = os.path.join(UPLOAD_FOLDER, str(course_id))
+
+    file_path = os.path.join(COURSE_SUBFOLDER, file_name)
+    if not os.path.exists(file_path):
+        return jsonify({"error": "File not found"}), 404
+
+    return send_from_directory(COURSE_SUBFOLDER, file_name, as_attachment=True)

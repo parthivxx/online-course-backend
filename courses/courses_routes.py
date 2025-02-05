@@ -12,7 +12,7 @@ courses_bp = Blueprint('courses' , __name__)
 @auth_required
 def create_course():
     data = request.get_json()
-    instructor_id = request.user
+    instructor_id = g.user
     try:
         title  , description , duration = data["title"] , data["description"] , int(data["duration"])
         db = get_db()
@@ -42,6 +42,13 @@ def get_course():
         if not course:
             return jsonify({"error": "Course not found"}), 404
 
+        UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'uploads')
+        COURSE_SUBFOLDER = os.path.join(UPLOAD_FOLDER , str(course_id))
+        if not os.path.exists(UPLOAD_FOLDER):
+            os.mkdir(UPLOAD_FOLDER)
+        if not os.path.exists(COURSE_SUBFOLDER):
+            os.mkdir(COURSE_SUBFOLDER)
+        files = os.listdir(COURSE_SUBFOLDER)
         return jsonify({
             "courseId": course.course_id,
             "title": course.course_title,
@@ -51,7 +58,7 @@ def get_course():
             "rating" : -1,
             "isEnrolled" : is_enrolled,
             "instructorId" : course.instructor_id,
-            "files" : []
+            "files" : files
         }), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
