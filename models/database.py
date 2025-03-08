@@ -9,6 +9,7 @@ load_dotenv()
 
 DATABASE_URI = os.getenv('DATABASE_URI')
 engine = create_engine(DATABASE_URI)
+connection = engine.connect()
 
 db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 
