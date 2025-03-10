@@ -41,7 +41,7 @@ class Quiz(Base):
     __tablename__ = 'quizzes'
     course_id = Column(Integer, ForeignKey('courses.course_id'), primary_key=True)
     quiz_title = Column(String(150))
-    number_of_questions = Column(Integer)
+    quiz_description = Column(Text)
     course = relationship('Course', back_populates='quiz')
     questions = relationship('Question', back_populates='quiz', cascade="all, delete-orphan")
 
