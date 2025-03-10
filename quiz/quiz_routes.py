@@ -22,22 +22,22 @@ def create_quiz():
         db.add(new_quiz)
         db.commit()
 
-        for question_data in data['questions']:
-            new_question = Question(
-                quiz_id=question_data['courseId'],  
-                question_text=question_data['questionBody'],
-                option_1_body=question_data['option1']['body'],
-                option_1_correctness=question_data['option1']['correctness'],
-                option_2_body=question_data['option2']['body'],
-                option_2_correctness=question_data['option2']['correctness'],
-                option_3_body=question_data['option3']['body'],
-                option_3_correctness=question_data['option3']['correctness'],
-                option_4_body=question_data['option4']['body'],
-                option_4_correctness=question_data['option4']['correctness']
-            )
-            db.add(new_question)
+        # for question_data in data['questions']:
+        #     new_question = Question(
+        #         course_id=question_data['courseId'],  
+        #         question_text=question_data['questionBody'],
+        #         option_1_body=question_data['option1']['body'],
+        #         option_1_correctness=question_data['option1']['correctness'],
+        #         option_2_body=question_data['option2']['body'],
+        #         option_2_correctness=question_data['option2']['correctness'],
+        #         option_3_body=question_data['option3']['body'],
+        #         option_3_correctness=question_data['option3']['correctness'],
+        #         option_4_body=question_data['option4']['body'],
+        #         option_4_correctness=question_data['option4']['correctness']
+        #     )
+        #     db.add(new_question)
 
-        db.commit()
+        # db.commit()
         return jsonify({"message": "new quiz and questions created"}), 200
     except Exception as e:
         db.rollback()
@@ -47,25 +47,25 @@ def create_quiz():
 def get_all():
     try:
         db = get_db()
-        quizzes = db.query(Quiz).options(joinedload(Quiz.questions)).all()
+        quizzes = db.query(Quiz)
         quiz_list = [
             {
                 # "id": quiz.quiz_id,
                 "courseId": quiz.course_id,
                 "quizTitle": quiz.quiz_title,
                 "numberOfQuestions": quiz.number_of_questions,
-                "questions": [
-                    {
-                        "questionText": question.question_text,
-                        "options": [
-                            {"body": question.option_1_body, "correctness": question.option_1_correctness},
-                            {"body": question.option_2_body, "correctness": question.option_2_correctness},
-                            {"body": question.option_3_body, "correctness": question.option_3_correctness},
-                            {"body": question.option_4_body, "correctness": question.option_4_correctness}
-                        ]
-                    }
-                    for question in quiz.questions
-                ]
+                # "questions": [
+                #     {
+                #         "questionText": question.question_text,
+                #         "options": [
+                #             {"body": question.option_1_body, "correctness": question.option_1_correctness},
+                #             {"body": question.option_2_body, "correctness": question.option_2_correctness},
+                #             {"body": question.option_3_body, "correctness": question.option_3_correctness},
+                #             {"body": question.option_4_body, "correctness": question.option_4_correctness}
+                #         ]
+                #     }
+                #     for question in quiz.questions
+                # ]
             }
             for quiz in quizzes
         ]
@@ -73,11 +73,8 @@ def get_all():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@quiz_bp.routes("/all-questions")
-def get_all_questions():
-    
 
-@quiz_bp.routes("/delete-all", methods=["DELETE"])
+@quiz_bp.route("/delete-all", methods=["DELETE"])
 def delete_all_quizzes():
     try:
         db = get_db()
