@@ -37,8 +37,6 @@ def create_quiz():
             i += 1
             db.add(new_question)
             db.commit()
-
-
         
         return jsonify({"message": "new quiz and questions created"}), 200
     except Exception as e:
@@ -67,6 +65,7 @@ def get_all(course_id):
         quiz_data = {
             "courseId": quiz_result.course_id,
             "quizTitle": quiz_result.quiz_title,
+            "quizDescription": quiz_result.quiz_description,
             "questions": [
                 {
                     "questionId": question.question_id,
