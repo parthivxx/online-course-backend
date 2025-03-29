@@ -57,7 +57,9 @@ def login():
     db = get_db()
     existing_user = db.query(User).filter(User.email == email).first()
     if not existing_user:
-        return jsonify({"success" : False}) , 401
+        return jsonify({"success" : False , "message" : "User not found!!"}) , 401
+    if not check_password_hash(existing_user.password , password):
+        return jsonify({"success" : False , "message" : "Incorrect Password!!"}) , 401
     else:
         token_content = {"id" : existing_user.id , "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(hours=1)}
         token = jwt.encode(token_content , os.getenv('JWT_SECRET'),os.getenv('JWT_ALGO'))

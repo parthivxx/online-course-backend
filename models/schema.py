@@ -1,4 +1,4 @@
-from sqlalchemy import Column , Integer , String , Text , ForeignKey , PrimaryKeyConstraint , Boolean
+from sqlalchemy import Column , Integer , String , Text , ForeignKey , PrimaryKeyConstraint , Boolean , TIMESTAMP , func
 from .database import Base
 from sqlalchemy.orm import relationship
 
@@ -58,3 +58,24 @@ class Question(Base):
 
     quiz = relationship('Quiz', back_populates='questions')
     __table_args__ = (PrimaryKeyConstraint('question_id', 'quiz_id'),)
+
+class Chat(Base):
+    __tablename__ = "chats"
+
+    chat_id = Column(Integer, primary_key=True, autoincrement=True)
+    teacher = Column(Integer , ForeignKey("users.id") , nullable=False)
+    student = Column(Integer , ForeignKey("users.id") , nullable=False)
+
+    messages = relationship("ChatMessage", back_populates="chat", cascade="all, delete")
+
+class ChatMessage(Base):
+    __tablename__ = "chat_messages"
+
+    message_id = Column(Integer, primary_key=True, autoincrement=True)
+    chat_id = Column(Integer, ForeignKey("chats.chat_id", ondelete="CASCADE"), nullable=False)
+    sender_id = Column(Integer , ForeignKey("users.id") , nullable=False)
+    chat_text = Column(Text, nullable=False)
+    timestamp = Column(TIMESTAMP, server_default=func.current_timestamp(), nullable=False)
+
+
+    chat = relationship("Chat", back_populates="messages")
