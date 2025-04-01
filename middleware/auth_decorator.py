@@ -8,7 +8,9 @@ def auth_required(f):
     def decorated_function(*args, **kwargs):
 
         token = request.headers.get("Authorization")
+        
         if not token:
+            print("Token is " , token)
             return jsonify({"error": "Authorization token is missing"}), 401
         
         try:
