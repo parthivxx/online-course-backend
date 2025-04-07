@@ -1,8 +1,9 @@
 from flask import jsonify , request , Blueprint , g , send_from_directory
 import os
 from middleware.auth_decorator import auth_required
-
+from dotenv import load_dotenv
 upload_bp = Blueprint('upload_bp' , __name__)
+load_dotenv()
 
 @upload_bp.route("/upload/<course_id>", methods=["POST"])
 @auth_required

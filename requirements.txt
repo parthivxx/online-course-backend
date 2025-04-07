@@ -7,3 +7,4 @@ pyJWT
 Gunicorn
 flask-socketio
 eventlet
+firebase-admin
