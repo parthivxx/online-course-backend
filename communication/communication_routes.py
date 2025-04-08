@@ -22,7 +22,7 @@ def get_chats():
 
         response2 = [
             {"chatId": chat.chat_id, "receiverId": chat.student, "senderId": chat.teacher
-             , "receiverName" : db.query(User).filter(User.id == Chat.student).first().name}
+             , "receiverName" : db.query(User).filter(User.id == chat.student).first().name}
             for chat in chats
         ]
 
