@@ -1,3 +1,6 @@
+import eventlet
+import eventlet.wsgi
+eventlet.monkey_patch()
 from flask import Flask , jsonify , request
 from auth.auth_routes import auth_bp
 from courses.courses_routes import courses_bp
@@ -10,8 +13,7 @@ from flask_cors import CORS
 from models.schema import Chat , ChatMessage
 from models.database import get_db
 from communication.communication_routes import communication_bp
-import eventlet
-import eventlet.wsgi
+
 
 app = Flask(__name__) 
 CORS(app , resources={r"/api/*": {"origins": "*"}})
