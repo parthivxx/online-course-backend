@@ -79,7 +79,7 @@ def get_all_courses():
                 "instructorName" : db.query(User).filter(User.id == course.instructor_id).first().name,
                 "instructorId" : course.instructor_id,
                 "rating" : -1,
-                "isEnrolled" : True if db.query(Enrolled).filter(and_(Enrolled.user_id ==user_id , Enrolled.course_id == course.course_id )).count() > 0 is not None else False
+                "isEnrolled" : db.query(Enrolled).filter(and_(Enrolled.user_id ==user_id , Enrolled.course_id == course.course_id )).count() > 0
             }
             courses_data.append(course_dict)
         return jsonify({"courses" : courses_data}) , 200
