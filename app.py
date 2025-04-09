@@ -10,11 +10,13 @@ from flask_cors import CORS
 from models.schema import Chat , ChatMessage
 from models.database import get_db
 from communication.communication_routes import communication_bp
+import eventlet
+import eventlet.wsgi
 
 app = Flask(__name__) 
 CORS(app , resources={r"/api/*": {"origins": "*"}})
 
-socketio = SocketIO(app , cors_allowed_origins="*", logger=True, engineio_logger=True)
+socketio = SocketIO(app , cors_allowed_origins="*", async_mode='eventlet',logger=True, engineio_logger=True)
 
 @app.route("/" , methods=['GET'])
 def hello():
@@ -98,4 +100,4 @@ with app.app_context():
      Base.metadata.create_all(bind=engine)
 
 if __name__ == "__main__":
-    socketio.run(app , debug=True)
+    socketio.run(app , debug=False)
